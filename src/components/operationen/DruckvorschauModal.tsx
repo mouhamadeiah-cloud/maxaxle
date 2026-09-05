@@ -14,7 +14,8 @@ import {
   Download,
   Send,
   FileCode,
-  RotateCcw
+  RotateCcw,
+  Loader2
 } from 'lucide-react';
 import { 
   Customer, 
@@ -30,6 +31,7 @@ import {
 } from '../../types';
 import { DocumentA4Layout } from './DocumentA4Layout';
 import { calculateDocumentTaxes } from '../../utils/taxCalculationEngine';
+import { exportDocumentToPdf } from '../../utils/documentPdfExporter';
 
 export interface DruckvorschauModalProps {
   isOpen: boolean;
@@ -136,6 +138,7 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
 }) => {
   const [zoomLevel, setZoomLevel] = useState<number>(90);
   const [activePage, setActivePage] = useState<number>(1);
+  const [isExportingPdf, setIsExportingPdf] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -170,6 +173,23 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleExportPdf = async () => {
+    setIsExportingPdf(true);
+    try {
+      const stageElement = document.getElementById('druckvorschau-scaling-stage');
+      const cleanDocName = `${currentDocMeta.label.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}_${documentNumber || 'Dokument'}`;
+      await exportDocumentToPdf({
+        element: stageElement,
+        fileName: `${cleanDocName}.pdf`,
+        scale: 2
+      });
+    } catch (err) {
+      console.error('PDF export failed:', err);
+    } finally {
+      setIsExportingPdf(false);
+    }
   };
 
   const handleZoom = (delta: number) => {
@@ -318,18 +338,35 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
             </div>
           </div>
 
-          {/* Right: Actions (Print, Save, Close) */}
+          {/* Right: Actions (PDF Export, Print, Save, Close) */}
           <div className="flex items-center gap-2">
+            {/* Direct PDF Export Button */}
+            <button
+              id="btn-druckvorschau-export-pdf"
+              type="button"
+              onClick={handleExportPdf}
+              disabled={isExportingPdf}
+              className="metallic-btn-secondary px-3.5 py-2 text-emerald-300 hover:text-emerald-200 font-bold rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md active:scale-95 transition-all disabled:opacity-50"
+              title="A4 Dokument mit 100% Formatierung als PDF-Datei herunterladen"
+            >
+              {isExportingPdf ? (
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+              ) : (
+                <Download className="w-4 h-4 metallic-debossed-icon text-emerald-400" />
+              )}
+              <span>{isExportingPdf ? 'Exportiere...' : 'PDF Export'}</span>
+            </button>
+
             {/* Primary Print Button */}
             <button
               id="btn-druckvorschau-print"
               type="button"
               onClick={handlePrint}
-              className="metallic-btn-primary px-4 py-2 text-slate-950 font-black rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md active:scale-95 transition-all"
-              title="A4 Dokument drucken oder als PDF sichern"
+              className="metallic-btn-primary px-4 py-2 text-slate-950 font-black rounded-xl text-xs flex items-center gap-2 cursor-pointer shadow-md active:scale-95 transition-all hover:brightness-110"
+              title="A4 Dokument drucken oder über Systemdialog als PDF drucken"
             >
               <Printer className="w-4 h-4 metallic-debossed-icon" />
-              <span>Drucken / PDF</span>
+              <span>Drucken</span>
             </button>
 
             {/* Optional Save Beleg */}
@@ -388,6 +425,7 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
               exportText={exportText}
               notes={notes}
               merchantSettings={merchantSettings}
+              provisionalPayment={provisionalPayment}
 
               probefahrtLicensePlate={probefahrtLicensePlate}
               probefahrtDrivingLicense={probefahrtDrivingLicense}
@@ -482,6 +520,7 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
                 exportText={exportText}
                 notes={notes}
                 merchantSettings={merchantSettings}
+                provisionalPayment={provisionalPayment}
 
                 probefahrtLicensePlate={probefahrtLicensePlate}
                 probefahrtDrivingLicense={probefahrtDrivingLicense}
@@ -524,6 +563,20 @@ export const DruckvorschauModal: React.FC<DruckvorschauModalProps> = ({
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleExportPdf}
+              disabled={isExportingPdf}
+              className="metallic-btn-secondary px-3.5 py-1.5 rounded-xl text-emerald-300 font-bold flex items-center gap-1.5 cursor-pointer active:scale-95 transition disabled:opacity-50"
+            >
+              {isExportingPdf ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+              ) : (
+                <Download className="w-3.5 h-3.5 text-emerald-400" />
+              )}
+              <span>{isExportingPdf ? 'Exportiere...' : 'PDF Export'}</span>
+            </button>
+
             <button
               type="button"
               onClick={handlePrint}

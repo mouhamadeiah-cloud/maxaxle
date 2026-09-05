@@ -35,7 +35,9 @@ import {
   Check,
   Clock,
   ChevronRight,
-  Bookmark
+  Bookmark,
+  Download,
+  Loader2
 } from 'lucide-react';
 import { 
   Vehicle, 
@@ -73,6 +75,7 @@ import { VehicleDetailModal } from './VehicleDetailModal';
 import { DruckvorschauModal } from './operationen/DruckvorschauModal';
 import { OperationsPerformanceDashboard } from './operationen/OperationsPerformanceDashboard';
 import { DualLayerScanningRings } from './CoinOrbitalNode';
+import { exportDocumentToPdf } from '../utils/documentPdfExporter';
 
 export interface OperationenViewProps {
   setActiveTab?: (tab: NavTab) => void;
@@ -602,6 +605,37 @@ export const OperationenView: React.FC<OperationenViewProps> = ({
   const [isDruckvorschauOpen, setIsDruckvorschauOpen] = useState(false);
   const [saveToast, setSaveToast] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+
+  const handleExportPdf = async () => {
+    setIsExportingPdf(true);
+    try {
+      const docTypeLabel = getDocumentTypeLabel(selectedDocId);
+      const cleanDocName = `${docTypeLabel.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}_${docNumber || 'Dokument'}`;
+      
+      let targetEl: HTMLElement | null = null;
+      if (selectedDocId === 'kaufvertrag' || selectedDocId === 'probefahrt' || selectedDocId === 'uebergabeprotokoll') {
+        targetEl = document.getElementById('document-a4-sheet');
+      }
+      if (!targetEl) {
+        targetEl = document.getElementById('operationen-document-a4-sheet');
+      }
+
+      const success = await exportDocumentToPdf({
+        element: targetEl,
+        fileName: `${cleanDocName}.pdf`,
+        scale: 2
+      });
+      if (success) {
+        setSaveToast(`PDF erfolgreich erstellt (${cleanDocName}.pdf)`);
+        setTimeout(() => setSaveToast(null), 3500);
+      }
+    } catch (err) {
+      console.error('PDF export error:', err);
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
 
   // Helper date adder
   const addDaysToToday = (days: number): string => {
@@ -1887,14 +1921,33 @@ export const OperationenView: React.FC<OperationenViewProps> = ({
                 <span>Druckvorschau</span>
               </button>
 
+              {/* Direct PDF Export Button */}
               <button
-                id="operationen-btn-print-pdf"
+                id="operationen-btn-export-pdf"
+                type="button"
+                onClick={handleExportPdf}
+                disabled={isExportingPdf}
+                className="metallic-btn-secondary flex items-center gap-2 px-4 py-2 text-emerald-300 hover:text-emerald-200 rounded-xl text-xs font-black transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                title="A4 Dokument mit 100% Formatierung als PDF-Datei herunterladen"
+              >
+                {isExportingPdf ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                ) : (
+                  <Download className="w-4 h-4 metallic-debossed-icon text-emerald-400" />
+                )}
+                <span>{isExportingPdf ? 'Exportiere...' : 'PDF Export'}</span>
+              </button>
+
+              {/* Direct Print Button */}
+              <button
+                id="operationen-btn-print"
                 type="button"
                 onClick={() => window.print()}
                 className="metallic-btn-secondary flex items-center gap-2 px-4 py-2 text-emerald-300 hover:text-emerald-200 rounded-xl text-xs font-black transition-all cursor-pointer active:scale-95"
+                title="A4 Dokument drucken oder über Systemdialog ausgeben"
               >
                 <Printer className="w-4 h-4 metallic-debossed-icon" />
-                <span>Drucken / PDF</span>
+                <span>Drucken</span>
               </button>
 
               <button
