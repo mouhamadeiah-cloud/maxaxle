@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Maxaxle",
+  "description": "Umfassendes Autohaus- und Fuhrpark-Management-System mit Bestandsverwaltung, Kasse, Rechnungen und Übergabeprotokollen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

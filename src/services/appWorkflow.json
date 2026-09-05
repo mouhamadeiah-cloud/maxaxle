@@ -1,0 +1,821 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "3.0.0",
+  "name": "Autohaus-OS-Hierarchical-3Layer-Workflow-Specification",
+  "description": "Zentrale, deterministische 3-Schichten-Architektur für Autohaus OS und Max AI: 1. Navigation/Hauptbefehle, 2. Prozess-Kontext & Detail-Eingabefelder (mit Validierung & Pflichtwerten), 3. Operative Ausführungsbefehle (Drucken, E-Mail-Versand, PDF/XML/DATEV Export) und Compound Workflows zur Verhinderung von Halluzinationen.",
+  
+  "systemRules": {
+    "strictAntiHallucination": true,
+    "disallowedOperations": [
+      "Erfinden fiktiver Fahrzeugdaten (Preise, FIN, HSN/TSN, Halter)",
+      "Erfinden fiktiver Kundendaten oder Anschriften",
+      "Ausführen von Layer-3-Befehlen ohne validierten Layer-2-Kontext",
+      "Vorschlagen nicht-existenter Module oder unregistrierter Parameter"
+    ],
+    "disambiguationRule": "Gibt es bei einer Suche nach Marke, Modell oder Kunde mehrere Treffer in der Datenbank, MUSS eine Auswahlentscheidung erzwungen werden.",
+    "validationEngine": {
+      "vinRegex": "^[A-HJ-NPR-Z0-9]{17}$",
+      "hsnRegex": "^[0-9]{4}$",
+      "tsnRegex": "^[A-Z0-9]{3}$",
+      "emailRegex": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+      "ibanRegex": "^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$"
+    }
+  },
+
+  "brandAliasDictionary": {
+    "vw": "Volkswagen",
+    "volks": "Volkswagen",
+    "volkswagen": "Volkswagen",
+    "golf": "GOLF",
+    "passat": "PASSAT",
+    "tiguan": "TIGUAN",
+    "polo": "POLO",
+    "t-roc": "T-ROC",
+    "t-cross": "T-CROSS",
+    "touareg": "TOUAREG",
+    "arteon": "ARTEON",
+    "caddy": "CADDY",
+    "merc": "Mercedes-Benz",
+    "mercedes": "Mercedes-Benz",
+    "benz": "Mercedes-Benz",
+    "mercedes benz": "Mercedes-Benz",
+    "mercedes-benz": "Mercedes-Benz",
+    "mercedesbenz": "Mercedes-Benz",
+    "daimler": "Mercedes-Benz",
+    "glc": "GLC",
+    "gle": "GLE",
+    "gla": "GLA",
+    "c-klasse": "C-Klasse",
+    "e-klasse": "E-Klasse",
+    "a-klasse": "A-Klasse",
+    "s-klasse": "S-Klasse",
+    "مرسيدس": "Mercedes-Benz",
+    "بنز": "Mercedes-Benz",
+    "مرسيدس بنز": "Mercedes-Benz",
+    "مرسيدس-بنز": "Mercedes-Benz",
+    "bmw": "BMW",
+    "bimmer": "BMW",
+    "بي ام": "BMW",
+    "بي ام دبليو": "BMW",
+    "بيمر": "BMW",
+    "volks wagen": "Volkswagen",
+    "فولكس واجن": "Volkswagen",
+    "فولكس فاجن": "Volkswagen",
+    "alfa romeo": "Alfa Romeo",
+    "alfa-romeo": "Alfa Romeo",
+    "alfaromeo": "Alfa Romeo",
+    "الفا روميو": "Alfa Romeo",
+    "mitsubishi": "Mitsubishi",
+    "ميتسوبيشي": "Mitsubishi",
+    "audi": "Audi",
+    "اودي": "Audi",
+    "porsche": "Porsche",
+    "بورش": "Porsche",
+    "opel": "Opel",
+    "اوبل": "Opel",
+    "ford": "Ford",
+    "فورد": "Ford",
+    "seat": "SEAT",
+    "سيات": "SEAT",
+    "cupra": "Cupra",
+    "كوبرا": "Cupra",
+    "skoda": "Skoda",
+    "سكودا": "Skoda",
+    "renault": "Renault",
+    "رينو": "Renault",
+    "peugeot": "Peugeot",
+    "بيجو": "Peugeot",
+    "citroen": "Citroën",
+    "سيتروين": "Citroën",
+    "toyota": "Toyota",
+    "تويوتا": "Toyota",
+    "hyundai": "Hyundai",
+    "هيونداي": "Hyundai",
+    "kia": "Kia",
+    "كيا": "Kia",
+    "volvo": "Volvo",
+    "فولفو": "Volvo",
+    "fiat": "Fiat",
+    "فيات": "Fiat",
+    "tesla": "Tesla",
+    "تسلا": "Tesla",
+    "nissan": "Nissan",
+    "نيسان": "Nissan",
+    "mazda": "Mazda",
+    "مازدا": "Mazda",
+    "mini": "MINI",
+    "ميني": "MINI",
+    "smart": "Smart",
+    "سمارت": "Smart",
+    "land rover": "Land Rover",
+    "لاند روفر": "Land Rover",
+    "range rover": "Land Rover",
+    "رينج روفر": "Land Rover",
+    "jaguar": "Jaguar",
+    "جاكوار": "Jaguar",
+    "dacia": "Dacia",
+    "داسيا": "Dacia"
+  },
+
+  "layers": {
+    "LAYER_1_NAVIGATION_MACRO": {
+      "layerId": 1,
+      "layerName": "Schicht 1: Navigation & Hauptbefehle",
+      "description": "Deterministische Steuerung aller Hauptansichten, Module und Makro-Befehle des Autohauses.",
+      "views": [
+        {
+          "id": "VIEW_HUB",
+          "tabKey": "hub",
+          "title": "Operations Hub / Cockpit",
+          "keywords": ["hub", "startseite", "cockpit", "zentrale", "home", "الرئيسية", "لوحة التحكم", "البداية"],
+          "description": "Zentrale Drehscheibe mit 3D-Orbital-Menü für Schnellzugriffe, Kennzahlen und Statistiken.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_1_NAVIGATION_MACRO"],
+          "nextLayerActions": ["SEC_DOC_KAUFVERTRAG", "SEC_DOC_HANDELSRECHNUNG", "FORM_VEHICLE_ALL_FIELDS", "FORM_CUSTOMER_ALL_FIELDS", "FORM_FINANCE_TRANSACTION_ADD"]
+        },
+        {
+          "id": "VIEW_OPERATIONEN",
+          "tabKey": "operationen",
+          "title": "Dokumenten-Zentrum (Orbital Workspace)",
+          "keywords": ["operationen", "dokumente", "vertrag", "rechnung schreiben", "erstellen", "angebot", "probefahrt", "übergabeprotokoll", "انشاء عقد", "انشاء فاتورة", "المستندات", "العمليات", "تجربة قيادة"],
+          "description": "Rechtssichere Erstellung aller 8 Autohaus-Dokumententypen mit Fahrzeug- & Kunden-Sync.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS"],
+          "nextLayerActions": [
+            "SEC_DOC_KAUFVERTRAG",
+            "SEC_DOC_HANDELSRECHNUNG",
+            "SEC_DOC_ERECHNUNG",
+            "SEC_DOC_EU_EXPORT",
+            "SEC_DOC_DRITTLAND",
+            "SEC_DOC_ANGEBOT",
+            "SEC_DOC_PROBEFAHRT",
+            "SEC_DOC_UEBERGABEPROTOKOLL"
+          ]
+        },
+        {
+          "id": "VIEW_NEU_FAHRZEUG",
+          "tabKey": "neu",
+          "title": "Fahrzeug-Neuaufnahme & KBA",
+          "keywords": ["neues fahrzeug", "auto anlegen", "fahrzeug aufnehmen", "inserat", "mobile de", "autoscout", "hsn tsn suche", "اضافة سيارة", "سيارة جديدة", "ادخال سيارة", "اعلان"],
+          "description": "Erfassung neuer Fahrzeuge inklusive KBA HSN/TSN-Abgleich und Börsen-Export.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS"],
+          "nextLayerActions": ["FORM_VEHICLE_ALL_FIELDS"]
+        },
+        {
+          "id": "VIEW_LAGER",
+          "tabKey": "lager",
+          "title": "Fahrzeugbestand / Lager",
+          "keywords": ["lager", "bestand", "fahrzeuge", "autos", "fahrzeugliste", "المخزون", "السيارات", "المستودع", "قائمة السيارات"],
+          "description": "Komplette Bestandsliste aller verfügbaren, reservierten und verkauften Fahrzeuge.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["FORM_VEHICLE_ALL_FIELDS", "OP_EXPORT_VEHICLE_CATALOG", "OP_PRINT_VEHICLE_EXPOSE"]
+        },
+        {
+          "id": "VIEW_CRM",
+          "tabKey": "kunden",
+          "title": "Kundenkartei & Kontakte",
+          "keywords": ["kunden", "crm", "kundenkartei", "käufer", "kontakte", "firmen", "العملاء", "جهات الاتصال", "الزبائن", "دليل العملاء"],
+          "description": "Zentrale Verwaltung aller Privat- und Gewerbekunden inklusive Kaufhistorie.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["FORM_CUSTOMER_ALL_FIELDS", "OP_EXPORT_CUSTOMERS"]
+        },
+        {
+          "id": "VIEW_RECHNUNGEN",
+          "tabKey": "rechnungen",
+          "title": "Rechnungsbuch & Belege",
+          "keywords": ["rechnungen", "rechnungsliste", "belege", "rechnungsarchiv", "mahnungen", "الفواتير", "ارشيف الفواتير", "قائمة الفواتير"],
+          "description": "Übersicht aller erstellten Rechnungen, Verträge, Zahlungsstati und Mahnstufen.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["SEC_DOC_HANDELSRECHNUNG", "SEC_DOC_ERECHNUNG", "OP_EXPORT_DATEV_CSV"]
+        },
+        {
+          "id": "VIEW_FINANZEN",
+          "tabKey": "finanzen",
+          "title": "Finanzen & Kassenbuch (GoBD)",
+          "keywords": ["finanzen", "kasse", "kassenbuch", "einnahmen", "ausgaben", "zahlung", "anzahlung", "restzahlung", "gewinn", "المالية", "الصندوق", "دفتر الصندوق", "المصاريف", "المدفوعات", "الارباح"],
+          "description": "Laufendes GoBD-konformes Kassenbuch, Zahlungsverfolgung und Margenberechnung.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["FORM_FINANCE_TRANSACTION_ADD", "OP_EXPORT_DATEV_CSV"]
+        },
+        {
+          "id": "VIEW_AUDIT_LOG",
+          "tabKey": "rechnungen",
+          "title": "Audit-Log & GoBD Protokoll",
+          "keywords": ["audit", "log", "protokoll", "gobd", "änderungshistorie", "سجل التدقيق", "سجل التغييرات"],
+          "description": "Unveränderbares GoBD-Prüfprotokoll aller Systemoperationen.",
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_EXPORT_DATEV_CSV"]
+        },
+        {
+          "id": "VIEW_SETTINGS",
+          "tabKey": "einstellungen",
+          "title": "Einstellungen & Firmendaten",
+          "keywords": ["einstellungen", "firmendaten", "briefkopf", "bankverbindung", "steuernummer", "الاعدادات", "بيانات الشركة", "الترويسة"],
+          "description": "Stammdaten des Autohauses, Steuersätze, Logo und Bankverbindung.",
+          "allowedNextLayers": ["LAYER_2_ENTITY_FORMS", "LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_SAVE_AND_PERSIST"]
+        }
+      ]
+    },
+
+    "LAYER_2_ENTITY_FORMS": {
+      "layerId": 2,
+      "layerName": "Schicht 2: Prozess-Kontext & Detail-Eingaben",
+      "description": "Vollständige Definition aller Formular- und Prozessdatenfelder mit exakten Validierungsregeln, Typisierungen und Pflichtfeldern zur Vermeidung von Halluzinationen.",
+      "sections": [
+        {
+          "sectionId": "SEC_DOC_KAUFVERTRAG",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "KAUFVERTRAG",
+          "title": "Kaufvertrag für Gebrauchtfahrzeuge",
+          "keywords": ["kaufvertrag", "auto verkaufen", "vertrag", "عقد بيع", "عقد شراء سيارة"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug auswählen", "type": "string", "required": true, "source": "vehicles", "validation": { "mustExistInDb": true } },
+            { "key": "customerId", "label": "Käufer auswählen", "type": "string", "required": true, "source": "customers", "validation": { "mustExistInDb": true } },
+            { "key": "invoiceNumber", "label": "Vertrags-/Rechnungsnummer", "type": "string", "required": true, "autoGenerate": true, "validation": { "pattern": "^[A-Z0-9\\-_/]{3,30}$" } },
+            { "key": "invoiceDate", "label": "Vertragsdatum", "type": "date", "required": true, "default": "CURRENT_DATE" },
+            { "key": "deliveryDate", "label": "Übergabedatum", "type": "date", "required": false },
+            { "key": "sellingPrice", "label": "Kaufpreis Brutto (€)", "type": "number", "required": true, "validation": { "min": 1, "max": 2000000 } },
+            { "key": "taxMode", "label": "Besteuerungsart", "type": "enum", "enum": ["DIFF_25A", "REGEL_19", "STEUERFREI_EXPORT"], "required": true, "default": "DIFF_25A" },
+            { "key": "paymentMethod", "label": "Zahlungsart", "type": "enum", "enum": ["BARKASSE", "UEBERWEISUNG", "EC_KARTE", "FINANZIERUNG"], "required": true, "default": "UEBERWEISUNG" },
+            { "key": "depositAmount", "label": "Geleistete Anzahlung (€)", "type": "number", "required": false, "default": 0, "validation": { "min": 0, "max": "{{sellingPrice}}" } },
+            { "key": "warrantyClause", "label": "Gewährleistung / Ausschluss", "type": "enum", "enum": ["B2C_12_MONATE", "B2B_AUSSCHLUSS", "KUNDENAUFTRAG_AUSSCHLUSS"], "required": true, "default": "B2C_12_MONATE" },
+            { "key": "accidentCondition", "label": "Unfallfreiheit", "type": "enum", "enum": ["UNFALLFREI", "BESCHAEDIGT_REPARIERT", "UNFALLWAGEN"], "required": true, "default": "UNFALLFREI" },
+            { "key": "customClauses", "label": "Zusätzliche Vereinbarungen", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_HANDELSRECHNUNG",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "HANDELSRECHNUNG",
+          "title": "Handelsrechnung / Standard-Rechnung",
+          "keywords": ["handelsrechnung", "rechnung", "rechnung erstellen", "فاتورة تجارية", "فاتورة بيع"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles", "validation": { "mustExistInDb": true } },
+            { "key": "customerId", "label": "Rechnungsempfänger", "type": "string", "required": true, "source": "customers", "validation": { "mustExistInDb": true } },
+            { "key": "invoiceNumber", "label": "Rechnungsnummer", "type": "string", "required": true, "autoGenerate": true },
+            { "key": "invoiceDate", "label": "Rechnungsdatum", "type": "date", "required": true, "default": "CURRENT_DATE" },
+            { "key": "dueDate", "label": "Fälligkeitsdatum", "type": "date", "required": true },
+            { "key": "taxMode", "label": "MwSt-Ausweis", "type": "enum", "enum": ["DIFF_25A", "REGEL_19", "STEUERFREI_EXPORT"], "required": true },
+            { "key": "netAmount", "label": "Nettobetrag (€)", "type": "number", "required": true, "autoCalculate": true },
+            { "key": "vatAmount", "label": "MwSt-Betrag (€)", "type": "number", "required": true, "autoCalculate": true },
+            { "key": "grossAmount", "label": "Gesamtbetrag Brutto (€)", "type": "number", "required": true, "validation": { "min": 0.01 } },
+            { "key": "paymentMethod", "label": "Zahlungsweg", "type": "enum", "enum": ["BARKASSE", "UEBERWEISUNG", "EC_KARTE"], "required": true },
+            { "key": "paymentTerms", "label": "Zahlungsziel / Text", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_ERECHNUNG",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "E_RECHNUNG",
+          "title": "E-Rechnung (ZUGFeRD / XRechnung)",
+          "keywords": ["e-rechnung", "xrechnung", "zugferd", "elektronische rechnung", "b2b e-rechnung", "فاتورة الكترونية"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerId", "label": "B2B-Kunde (Firma)", "type": "string", "required": true, "source": "customers" },
+            { "key": "buyerReference", "label": "Leitweg-ID / Buyer Reference", "type": "string", "required": false },
+            { "key": "customerVatId", "label": "Kunden USt-IdNr", "type": "string", "required": true, "validation": { "pattern": "^[A-Z]{2}[A-Z0-9+*#]{2,14}$" } },
+            { "key": "customerEmail", "label": "E-Rechnungs-E-Mail", "type": "string", "required": true, "validation": { "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" } },
+            { "key": "invoiceNumber", "label": "Rechnungsnummer", "type": "string", "required": true },
+            { "key": "taxMode", "label": "MwSt-Modus", "type": "enum", "enum": ["REGEL_19", "DIFF_25A", "STEUERFREI_EXPORT"], "required": true, "default": "REGEL_19" },
+            { "key": "xmlStandard", "label": "XML Standard", "type": "enum", "enum": ["XRECHNUNG_3_0", "ZUGFERD_2_2_COMFORT"], "required": true, "default": "ZUGFERD_2_2_COMFORT" }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_EXPORT_XML_ERECHNUNG", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_EU_EXPORT",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "EU_EXPORT",
+          "title": "EU-Exportrechnung (Innergemeinschaftlich)",
+          "keywords": ["eu export", "steuerfrei eu", "innergemeinschaftliche lieferung", "تصدير اوروبي", "فاتورة تصدير اوروبا"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerId", "label": "EU-Gewerbekunde", "type": "string", "required": true, "source": "customers" },
+            { "key": "customerVatId", "label": "Gültige EU USt-IdNr", "type": "string", "required": true, "validation": { "pattern": "^[A-Z]{2}[A-Z0-9+*#]{2,14}$" } },
+            { "key": "destinationCountry", "label": "Bestimmungsland (EU-Staat)", "type": "string", "required": true },
+            { "key": "gelangensbestaetigung", "label": "Gelangensbestätigung gefordert", "type": "boolean", "default": true },
+            { "key": "netPrice", "label": "Nettopreis steuerfrei (€)", "type": "number", "required": true, "validation": { "min": 1 } },
+            { "key": "transportType", "label": "Beförderungsart (Selbstabholung / Spedition)", "type": "string", "required": true }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_DRITTLAND",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "DRITTLAND",
+          "title": "Ausfuhrrechnung / Drittland-Export (z.B. Schweiz, VAE)",
+          "keywords": ["drittland", "ausfuhrrechnung", "export drittland", "zoll export", "تصدير دولي", "فاتورة تصدير خارج اوروبا"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerId", "label": "Käufer im Drittland", "type": "string", "required": true, "source": "customers" },
+            { "key": "destinationCountry", "label": "Zielland (z.B. Schweiz)", "type": "string", "required": true },
+            { "key": "mrnNumber", "label": "MRN / ATLAS-Zollnummer (optional)", "type": "string", "required": false },
+            { "key": "kautionAmount", "label": "MwSt-Kaution bis Ausfuhrnachweis (€)", "type": "number", "required": false, "default": 0 },
+            { "key": "netPrice", "label": "Export-Kaufpreis (€)", "type": "number", "required": true, "validation": { "min": 1 } }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_ANGEBOT",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "ANGEBOT",
+          "title": "Verbindliches Fahrzeugangebot",
+          "keywords": ["angebot", "kostenvoranschlag", "offerte", "عرض سعر", "عرض اسعار للسيارة"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerId", "label": "Interessent / Empfänger", "type": "string", "required": true, "source": "customers" },
+            { "key": "offerNumber", "label": "Angebotsnummer", "type": "string", "required": true, "autoGenerate": true },
+            { "key": "validUntil", "label": "Gültig bis", "type": "date", "required": true },
+            { "key": "offeredPrice", "label": "Angebotspreis Brutto (€)", "type": "number", "required": true, "validation": { "min": 1 } },
+            { "key": "includedServices", "label": "Inkludierte Leistungen (z.B. TÜV neu, Inspektion)", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_UEBERGABEPROTOKOLL",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "UEBERGABEPROTOKOLL",
+          "title": "Fahrzeug-Übergabeprotokoll",
+          "keywords": ["übergabeprotokoll", "übergabe", "auto übergeben", "auslieferung", "محضر تسليم", "تسليم سيارة"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerId", "label": "Käufer", "type": "string", "required": true, "source": "customers" },
+            { "key": "handoverDate", "label": "Übergabedatum & Uhrzeit", "type": "string", "required": true },
+            { "key": "exactMileage", "label": "Exakter km-Stand bei Übergabe", "type": "number", "required": true, "validation": { "min": 0 } },
+            { "key": "keysCount", "label": "Anzahl Fahrzeugschlüssel", "type": "number", "required": true, "default": 2, "validation": { "min": 1, "max": 10 } },
+            { "key": "checkZulassung1", "label": "Zulassungsbescheinigung Teil I vorhanden", "type": "boolean", "default": true },
+            { "key": "checkZulassung2", "label": "Zulassungsbescheinigung Teil II vorhanden", "type": "boolean", "default": true },
+            { "key": "checkCoc", "label": "COC-Papiere vorhanden", "type": "boolean", "default": true },
+            { "key": "checkTuev", "label": "Aktueller TÜV/HU-Bericht vorhanden", "type": "boolean", "default": true },
+            { "key": "checkServiceBook", "label": "Serviceheft / Nachweise vorhanden", "type": "boolean", "default": true },
+            { "key": "checkWheels", "label": "Bereifung geprüft (Sommer/Winter)", "type": "boolean", "default": true },
+            { "key": "checkWarnvest", "label": "Warndreieck & Verbandskasten vorhanden", "type": "boolean", "default": true },
+            { "key": "conditionNotes", "label": "Optische Bemerkungen / Zubehör", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "SEC_DOC_PROBEFAHRT",
+          "parentView": "VIEW_OPERATIONEN",
+          "documentType": "PROBEFAHRT",
+          "title": "Probefahrtvereinbarung",
+          "keywords": ["probefahrt", "probefahrtvereinbarung", "testfahrt", "تجربة قيادة", "عقد تجربة قيادة"],
+          "fields": [
+            { "key": "vehicleId", "label": "Fahrzeug", "type": "string", "required": true, "source": "vehicles" },
+            { "key": "customerName", "label": "Fahrer / Interessent", "type": "string", "required": true, "validation": { "minLen": 2 } },
+            { "key": "driversLicenseNr", "label": "Führerschein-Nummer", "type": "string", "required": true, "validation": { "minLen": 3 } },
+            { "key": "idCardNr", "label": "Personalausweis-Nr", "type": "string", "required": true, "validation": { "minLen": 3 } },
+            { "key": "testDriveDate", "label": "Datum", "type": "date", "required": true, "default": "CURRENT_DATE" },
+            { "key": "plannedDuration", "label": "Dauer (z.B. 60 Min)", "type": "string", "required": true, "default": "60 Min" },
+            { "key": "depositAmount", "label": "Kaution (€)", "type": "number", "default": 0, "validation": { "min": 0 } },
+            { "key": "deductibleAmount", "label": "Selbstbeteiligung im Schadensfall (€)", "type": "number", "default": 1000, "validation": { "min": 0 } }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_RENDER_PDF_PREVIEW", "OP_PRINT_DOCUMENT", "OP_DOWNLOAD_PDF", "OP_SEND_EMAIL_DOCUMENT", "OP_SAVE_AND_PERSIST"]
+        },
+
+        {
+          "sectionId": "FORM_VEHICLE_ALL_FIELDS",
+          "parentView": "VIEW_NEU_FAHRZEUG",
+          "title": "Fahrzeug-Stammdaten & Börsen-Felder",
+          "keywords": ["fahrzeug anlegen", "auto daten", "hsn tsn eingabe", "بيانات السيارة", "ادخال معلومات السيارة"],
+          "fields": [
+            { "key": "hsn", "label": "HSN (4-stellig)", "type": "string", "pattern": "^[0-9]{4}$", "required": true, "validation": { "exactLen": 4 } },
+            { "key": "tsn", "label": "TSN (3-stellig)", "type": "string", "pattern": "^[A-Z0-9]{3}$", "required": true, "validation": { "exactLen": 3 } },
+            { "key": "brand", "label": "Marke / Hersteller", "type": "string", "required": true, "autoFilledFromKBA": true, "validation": { "minLen": 2 } },
+            { "key": "model", "label": "Modellreihe", "type": "string", "required": true, "autoFilledFromKBA": true, "validation": { "minLen": 1 } },
+            { "key": "modelVariant", "label": "Modellvariante / Ausführung", "type": "string", "required": false },
+            { "key": "vin", "label": "Fahrgestellnummer (FIN / 17 Stellen)", "type": "string", "pattern": "^[A-HJ-NPR-Z0-9]{17}$", "required": true, "validation": { "exactLen": 17 } },
+            { "key": "firstRegistration", "label": "Erstzulassung (MM/JJJJ)", "type": "string", "required": true, "validation": { "pattern": "^(0[1-9]|1[0-2])\\/20[0-9]{2}$" } },
+            { "key": "mileage", "label": "Kilometerstand (km)", "type": "number", "required": true, "validation": { "min": 0, "max": 2000000 } },
+            { "key": "powerHp", "label": "Leistung (PS)", "type": "number", "required": true, "validation": { "min": 1, "max": 2000 } },
+            { "key": "powerKw", "label": "Leistung (kW)", "type": "number", "required": false, "autoCalculate": true },
+            { "key": "engineCapacity", "label": "Hubraum (ccm)", "type": "number", "required": false },
+            { "key": "fuelType", "label": "Kraftstoffart", "type": "enum", "enum": ["Benzin", "Diesel", "Elektro", "Hybrid (Benzin/Elektro)", "Hybrid (Diesel/Elektro)", "Plug-in-Hybrid", "LPG", "CNG"], "required": true },
+            { "key": "transmission", "label": "Getriebe", "type": "enum", "enum": ["Schaltgetriebe", "Automatik", "Halbautomatik"], "required": true },
+            { "key": "color", "label": "Außenfarbe", "type": "string", "required": true },
+            { "key": "doors", "label": "Türen", "type": "enum", "enum": ["2/3", "4/5", "6/7"], "default": "4/5" },
+            { "key": "seats", "label": "Sitzplätze", "type": "number", "default": 5 },
+            { "key": "huAu", "label": "TÜV / HU gültig bis (MM/JJJJ)", "type": "string", "required": true },
+            { "key": "previousOwners", "label": "Anzahl Fahrzeughalter", "type": "number", "default": 1 },
+            { "key": "purchasePrice", "label": "Einkaufspreis Netto/Brutto (€)", "type": "number", "required": true, "validation": { "min": 1 } },
+            { "key": "sellingPrice", "label": "Verkaufspreis Brutto (€)", "type": "number", "required": true, "validation": { "min": 1 } },
+            { "key": "vatType", "label": "Umsatzsteuer-Modus", "type": "enum", "enum": ["Differenzbesteuerung §25a", "Regelbesteuerung 19%", "Steuerfrei Export"], "required": true },
+            { "key": "licensePlate", "label": "Kennzeichen (optional)", "type": "string", "required": false },
+            { "key": "location", "label": "Standort / Stellplatz", "type": "string", "default": "Hauptlager" },
+            { "key": "status", "label": "Bestandsstatus", "type": "enum", "enum": ["VERFUEGBAR", "RESERVIERT", "VERKAUFT", "IN_AUFBEREITUNG"], "default": "VERFUEGBAR" },
+            { "key": "equipment", "label": "Ausstattungsmerkmale (Array)", "type": "array_string", "required": false },
+            { "key": "description", "label": "Inseratstext / Beschreibung", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_SAVE_VEHICLE", "OP_PRINT_VEHICLE_EXPOSE"]
+        },
+
+        {
+          "sectionId": "FORM_CUSTOMER_ALL_FIELDS",
+          "parentView": "VIEW_CRM",
+          "title": "Kunden-Stammdaten",
+          "keywords": ["kunde anlegen", "neuer kunde", "käufer daten", "عميل جديد", "بيانات العميل"],
+          "fields": [
+            { "key": "type", "label": "Kundentyp", "type": "enum", "enum": ["Privatkunde", "Gewerbekunde / Firma"], "required": true, "default": "Privatkunde" },
+            { "key": "salutation", "label": "Anrede", "type": "enum", "enum": ["Herr", "Frau", "Firma", "Divers"], "required": true },
+            { "key": "name", "label": "Vollständiger Name / Ansprechpartner", "type": "string", "required": true, "validation": { "minLen": 2 } },
+            { "key": "companyName", "label": "Firmenname (bei B2B)", "type": "string", "required": false },
+            { "key": "vatId", "label": "USt-IdNr (Umsatzsteuer-Identifikationsnummer)", "type": "string", "required": false, "validation": { "pattern": "^[A-Z]{2}[A-Z0-9+*#]{2,14}$" } },
+            { "key": "taxNumber", "label": "Steuernummer", "type": "string", "required": false },
+            { "key": "street", "label": "Straße & Hausnummer", "type": "string", "required": true, "validation": { "minLen": 3 } },
+            { "key": "zipCode", "label": "Postleitzahl (PLZ)", "type": "string", "required": true, "validation": { "pattern": "^[0-9]{5}$" } },
+            { "key": "city", "label": "Ort / Stadt", "type": "string", "required": true, "validation": { "minLen": 2 } },
+            { "key": "country", "label": "Land", "type": "string", "default": "Deutschland" },
+            { "key": "phone", "label": "Telefon / Festnetz", "type": "string", "required": false },
+            { "key": "mobile", "label": "Mobiltelefon", "type": "string", "required": false },
+            { "key": "email", "label": "E-Mail-Adresse", "type": "string", "required": false, "validation": { "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$" } },
+            { "key": "iban", "label": "IBAN Bankverbindung", "type": "string", "required": false, "validation": { "pattern": "^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$" } },
+            { "key": "bic", "label": "BIC / SWIFT", "type": "string", "required": false },
+            { "key": "idCardNumber", "label": "Ausweis- / Passnummer", "type": "string", "required": false },
+            { "key": "notes", "label": "Interne Kundennotizen", "type": "string", "required": false }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_SAVE_CUSTOMER", "OP_EXPORT_CUSTOMERS"]
+        },
+
+        {
+          "sectionId": "FORM_FINANCE_TRANSACTION_ADD",
+          "parentView": "VIEW_FINANZEN",
+          "title": "Kassenbuch- & Zahlungserfassung",
+          "keywords": ["zahlung erfassen", "anzahlung buchen", "ausgabe eintragen", "einnahme kasse", "تسجيل دفعة", "دفعة نقدية", "تسجيل مصروف", "تسجيل ايراد"],
+          "fields": [
+            { "key": "type", "label": "Buchungsart", "type": "enum", "enum": ["EINNAHME", "AUSGABE"], "required": true },
+            { "key": "category", "label": "Kategorie", "type": "enum", "enum": ["FAHRZEUGVERKAUF", "FAHRZEUGKAUF", "ANZAHLUNG", "RESTZAHLUNG", "REPARATUR", "AUFBEREITUNG", "TUEV_AU", "TANKEN", "TRANSPORT", "MIETE_NEBENKOSTEN", "STEUER", "SONSTIGES"], "required": true },
+            { "key": "amount", "label": "Betrag (€)", "type": "number", "required": true, "validation": { "min": 0.01 } },
+            { "key": "date", "label": "Buchungsdatum", "type": "date", "required": true, "default": "CURRENT_DATE" },
+            { "key": "paymentMethod", "label": "Zahlungsmittel", "type": "enum", "enum": ["BARKASSE", "BANK_UEBERWEISUNG", "EC_KARTE"], "required": true, "default": "BARKASSE" },
+            { "key": "vehicleId", "label": "Zugeordnetes Fahrzeug (optional)", "type": "string", "required": false, "source": "vehicles" },
+            { "key": "customerId", "label": "Zugeordneter Kunde (optional)", "type": "string", "required": false, "source": "customers" },
+            { "key": "receiptNumber", "label": "Belegnummer / Rechnungs-Ref", "type": "string", "required": false },
+            { "key": "description", "label": "Buchungstext / Verwendungszweck", "type": "string", "required": true, "validation": { "minLen": 3 } },
+            { "key": "taxDeductible", "label": "Vorsteuerabzugsfähig", "type": "boolean", "default": true }
+          ],
+          "allowedNextLayers": ["LAYER_3_OPERATIONAL_EXECUTION"],
+          "nextLayerActions": ["OP_SAVE_FINANCE_ENTRY", "OP_UPDATE_VEHICLE_BALANCE", "OP_PRINT_DOCUMENT"]
+        }
+      ]
+    },
+
+    "LAYER_3_OPERATIONAL_EXECUTION": {
+      "layerId": 3,
+      "layerName": "Schicht 3: Operative Ausführungsbefehle",
+      "description": "Die ausführende Schicht für Dokumentenerzeugung, Druckausgabe, E-Mail-Versand, PDF/XML/DATEV Exporte und dauerhafte Speicherung. Jeder Befehl definiert strukturierte Parameter und Vorbedingungen, um Halluzinationen auszuschließen.",
+      "operations": [
+        {
+          "opId": "OP_RENDER_PDF_PREVIEW",
+          "label": "PDF-Vorschau anzeigen",
+          "keywords": ["vorschau", "dokument ansehen", "prüfen", "عرض المستند", "معاينة"],
+          "executionType": "UI_MODAL_RENDER",
+          "parameters": {
+            "viewMode": "high-res-canvas",
+            "zoom": 100,
+            "showWatermark": false
+          },
+          "prerequisites": ["vehicleSelected", "customerSelected", "documentTypeValid"]
+        },
+        {
+          "opId": "OP_PRINT_DOCUMENT",
+          "label": "Dokument drucken (DIN A4)",
+          "keywords": ["drucken", "ausdrucken", "print", "طباعة", "اطبع العقد", "اطبع الفاتورة"],
+          "executionType": "SYSTEM_PRINT",
+          "parameters": {
+            "format": "A4",
+            "orientation": "portrait",
+            "margins": "standard_mm_15",
+            "colorMode": "color"
+          },
+          "prerequisites": ["vehicleSelected", "customerSelected", "documentTypeValid"]
+        },
+        {
+          "opId": "OP_DOWNLOAD_PDF",
+          "label": "PDF herunterladen / exportieren",
+          "keywords": ["download", "pdf speichern", "herunterladen", "تحميل pdf", "تصدير pdf"],
+          "executionType": "FILE_DOWNLOAD_PDF",
+          "parameters": {
+            "pdfStandard": "PDF/A-3b",
+            "compression": "high",
+            "embedFonts": true,
+            "filenamePattern": "{{docType}}_{{invoiceNumber}}_{{customerName}}.pdf"
+          },
+          "prerequisites": ["documentGenerated"]
+        },
+        {
+          "opId": "OP_SEND_EMAIL_DOCUMENT",
+          "label": "Dokument per E-Mail an Käufer senden",
+          "keywords": ["per email senden", "an käufer mailen", "rechnung senden", "ارسال ايميل", "ارسال الفاتورة بالبريد"],
+          "executionType": "SERVICE_MAIL_DISPATCH",
+          "parameters": {
+            "recipientEmail": "{{customer.email}}",
+            "subject": "Ihr {{docTitle}} - {{company.name}}",
+            "attachPdf": true,
+            "mailTemplate": "DOCUMENT_DISPATCH_DEFAULT"
+          },
+          "prerequisites": ["customerEmailValid", "documentGenerated"]
+        },
+        {
+          "opId": "OP_EXPORT_XML_ERECHNUNG",
+          "label": "E-Rechnung XML exportieren (ZUGFeRD / XRechnung)",
+          "keywords": ["xml export", "xrechnung download", "zugferd export", "تصدير فاتورة الكترونية"],
+          "executionType": "FILE_DOWNLOAD_XML",
+          "parameters": {
+            "profile": "EN16931_COMFORT",
+            "schemaVersion": "2.2",
+            "encoding": "UTF-8"
+          },
+          "prerequisites": ["b2bCustomerSelected", "vatIdProvided", "grossAmountValid"]
+        },
+        {
+          "opId": "OP_SAVE_AND_PERSIST",
+          "label": "Dokument & Vorgang dauerhaft speichern",
+          "keywords": ["speichern", "vertrag sichern", "abschließen", "حفظ", "تثبيت العقد"],
+          "executionType": "DATABASE_PERSIST",
+          "parameters": {
+            "targetCollection": "invoices",
+            "generateAuditRecord": true,
+            "recalculateVehicleStatus": true
+          },
+          "prerequisites": ["invoiceNumberUnique", "grossAmountValid"]
+        },
+        {
+          "opId": "OP_SAVE_VEHICLE",
+          "label": "Fahrzeug im Bestand speichern",
+          "keywords": ["fahrzeug speichern", "auto anlegen abschließen", "حفظ السيارة"],
+          "executionType": "DATABASE_PERSIST_VEHICLE",
+          "parameters": {
+            "targetCollection": "vehicles",
+            "updateKbaData": true
+          },
+          "prerequisites": ["brandProvided", "modelProvided", "purchasePriceProvided", "sellingPriceProvided"]
+        },
+        {
+          "opId": "OP_SAVE_CUSTOMER",
+          "label": "Kunde in Kartei speichern",
+          "keywords": ["kunde speichern", "kontakt anlegen", "حفظ العميل"],
+          "executionType": "DATABASE_PERSIST_CUSTOMER",
+          "parameters": {
+            "targetCollection": "customers",
+            "validateVatIdOnline": false
+          },
+          "prerequisites": ["customerNameProvided", "streetProvided", "cityProvided"]
+        },
+        {
+          "opId": "OP_SAVE_FINANCE_ENTRY",
+          "label": "Kassenbuch-Eintrag verbuchen",
+          "keywords": ["zahlung buchen", "kassenbucheintrag sichern", "تسجيل الحركة المالية"],
+          "executionType": "DATABASE_PERSIST_FINANCE",
+          "parameters": {
+            "targetCollection": "cashbook",
+            "updateDailyBalance": true,
+            "immutableRecord": true
+          },
+          "prerequisites": ["amountProvided", "categoryProvided", "dateProvided", "descriptionProvided"]
+        },
+        {
+          "opId": "OP_UPDATE_VEHICLE_BALANCE",
+          "label": "Zahlungsstatus & Restbetrag aktualisieren",
+          "keywords": ["restbetrag berechnen", "zahlung verrechnen", "تحديث رصيد السيارة"],
+          "executionType": "STATE_RECALCULATE",
+          "parameters": {
+            "recalculateVehicleRemainingBalance": true
+          },
+          "prerequisites": ["vehicleIdValid", "amountProvided"]
+        },
+        {
+          "opId": "OP_EXPORT_DATEV_CSV",
+          "label": "DATEV / Steuerberater CSV Export",
+          "keywords": ["datev", "steuerberater export", "csv buchhaltung", "تصدير للمحاسب"],
+          "executionType": "FILE_DOWNLOAD_CSV",
+          "parameters": {
+            "format": "DATEV_BUCHUNGSSTAPEL_V7",
+            "separator": ";",
+            "charset": "windows-1252"
+          },
+          "prerequisites": ["recordsAvailable"]
+        },
+        {
+          "opId": "OP_PRINT_VEHICLE_EXPOSE",
+          "label": "Fahrzeug-Preisschild / Exposé drucken",
+          "keywords": ["exposé drucken", "preisschild drucken", "طباعة ورقة السعر"],
+          "executionType": "SYSTEM_PRINT_EXPOSE",
+          "parameters": {
+            "format": "A4_LANDSCAPE_OR_PORTRAIT",
+            "includeQrCode": true
+          },
+          "prerequisites": ["vehicleSelected"]
+        },
+        {
+          "opId": "OP_EXPORT_CUSTOMERS",
+          "label": "Kundenliste als CSV exportieren",
+          "keywords": ["kundenliste exportieren", "kunden csv", "تصدير قائمة العملاء"],
+          "executionType": "FILE_DOWNLOAD_CSV",
+          "parameters": {
+            "fields": ["name", "companyName", "email", "phone", "street", "city", "vatId"]
+          },
+          "prerequisites": ["recordsAvailable"]
+        }
+      ]
+    }
+  },
+
+  "compoundWorkflows": [
+    {
+      "compoundId": "CW_ADD_VEHICLE_PAYMENT",
+      "title": "Zahlung / Anzahlung für Fahrzeug erfassen",
+      "keywords": [
+        "anzahlung für fahrzeug", "zahlung für auto", "barzahlung auto", "restzahlung für fahrzeug",
+        "دفعة للسيارة", "دفعة نقدا للسيارة", "دفعة كاش للسيارة", "سجل دفعة", "سجل انزال دفعة", "اضف دفعة"
+      ],
+      "description": "Mehrschichtige Operation: Sucht das Fahrzeug in Schicht 1, füllt die Buchungsparameter in Schicht 2 und aktualisiert Kassenbuch & Fahrzeugsaldo in Schicht 3.",
+      "steps": [
+        {
+          "stepOrder": 1,
+          "targetLayer": "LAYER_1_NAVIGATION_MACRO",
+          "action": "NAVIGATE_AND_SELECT_ENTITY",
+          "targetTab": "finanzen",
+          "lookupEntity": "vehicles",
+          "description": "Fahrzeug identifizieren und Finanzen-Ansicht öffnen"
+        },
+        {
+          "stepOrder": 2,
+          "targetLayer": "LAYER_2_ENTITY_FORMS",
+          "action": "POPULATE_FORM",
+          "targetSection": "FORM_FINANCE_TRANSACTION_ADD",
+          "mapping": {
+            "type": "EINNAHME",
+            "category": "ANZAHLUNG",
+            "paymentMethod": "BARKASSE",
+            "amount": "{{amount}}",
+            "date": "{{date || CURRENT_DATE}}",
+            "vehicleId": "{{matchedVehicle.id}}",
+            "description": "Anzahlung Bar für {{matchedVehicle.brand}} {{matchedVehicle.model}} (FIN: {{matchedVehicle.vin}})"
+          }
+        },
+        {
+          "stepOrder": 3,
+          "targetLayer": "LAYER_3_OPERATIONAL_EXECUTION",
+          "action": "EXECUTE_OPERATIONS",
+          "operations": ["OP_SAVE_FINANCE_ENTRY", "OP_UPDATE_VEHICLE_BALANCE"],
+          "description": "Buchung im Kassenbuch festschreiben und Fahrzeugsaldo angleichen"
+        }
+      ],
+      "expectedNextSuggestions": [
+        { "label": "Quittung drucken", "opId": "OP_PRINT_DOCUMENT" },
+        { "label": "Kassenbuch ansehen", "tabKey": "finanzen" },
+        { "label": "Kaufvertrag für dieses Fahrzeug erstellen", "tabKey": "operationen", "docType": "KAUFVERTRAG" }
+      ]
+    },
+
+    {
+      "compoundId": "CW_CREATE_CONTRACT_WITH_CUSTOMER_AND_CAR",
+      "title": "Kaufvertrag für Kunde & Fahrzeug erstellen",
+      "keywords": [
+        "kaufvertrag erstellen für", "auto verkaufen an", "vertrag für fahrzeug an kunde",
+        "انشئ عقد بيع للعميل", "بيع سيارة للعميل", "عقد شراء للسيارة"
+      ],
+      "description": "Mehrschichtige Operation: Öffnet Operationen-Hub (Schicht 1), verknüpft Fahrzeug & Kunde mit Kaufpreis (Schicht 2) und generiert den fertigen Vertragsentwurf (Schicht 3).",
+      "steps": [
+        {
+          "stepOrder": 1,
+          "targetLayer": "LAYER_1_NAVIGATION_MACRO",
+          "action": "NAVIGATE_TO_VIEW",
+          "targetTab": "operationen"
+        },
+        {
+          "stepOrder": 2,
+          "targetLayer": "LAYER_2_ENTITY_FORMS",
+          "action": "POPULATE_FORM",
+          "targetSection": "SEC_DOC_KAUFVERTRAG",
+          "mapping": {
+            "vehicleId": "{{matchedVehicle.id}}",
+            "customerId": "{{matchedCustomer.id}}",
+            "sellingPrice": "{{price || matchedVehicle.sellingPrice}}",
+            "taxMode": "{{matchedVehicle.vatType === 'Differenzbesteuerung §25a' ? 'DIFF_25A' : 'REGEL_19'}}",
+            "invoiceDate": "{{CURRENT_DATE}}"
+          }
+        },
+        {
+          "stepOrder": 3,
+          "targetLayer": "LAYER_3_OPERATIONAL_EXECUTION",
+          "action": "EXECUTE_OPERATIONS",
+          "operations": ["OP_RENDER_PDF_PREVIEW"],
+          "description": "Vorschau des Kaufvertrags rendern und druckfertig bereitstellen"
+        }
+      ],
+      "expectedNextSuggestions": [
+        { "label": "Kaufvertrag drucken", "opId": "OP_PRINT_DOCUMENT" },
+        { "label": "Als PDF herunterladen", "opId": "OP_DOWNLOAD_PDF" },
+        { "label": "Per E-Mail senden", "opId": "OP_SEND_EMAIL_DOCUMENT" },
+        { "label": "Übergabeprotokoll erstellen", "tabKey": "operationen", "docType": "UEBERGABEPROTOKOLL" },
+        { "label": "Anzahlung buchen", "compoundId": "CW_ADD_VEHICLE_PAYMENT" }
+      ]
+    },
+
+    {
+      "compoundId": "CW_RECORD_VEHICLE_EXPENSE",
+      "title": "Fahrzeugausgabe / Reparatur erfassen",
+      "keywords": [
+        "ausgabe für fahrzeug", "reparatur eintragen", "tüv kosten für fahrzeug", "aufbereitung buchen", "tanken fahrzeug",
+        "سجل مصروف للسيارة", "مصاريف اصلاح للسيارة", "تكلفة فحص للسيارة", "وقود للسيارة"
+      ],
+      "description": "Mehrschichtige Operation: Weist dem Fahrzeug eine Ausgabe zu (Schicht 1+2) und bucht diese im Kassenbuch ab (Schicht 3).",
+      "steps": [
+        {
+          "stepOrder": 1,
+          "targetLayer": "LAYER_1_NAVIGATION_MACRO",
+          "action": "NAVIGATE_AND_SELECT_ENTITY",
+          "targetTab": "finanzen",
+          "lookupEntity": "vehicles"
+        },
+        {
+          "stepOrder": 2,
+          "targetLayer": "LAYER_2_ENTITY_FORMS",
+          "action": "POPULATE_FORM",
+          "targetSection": "FORM_FINANCE_TRANSACTION_ADD",
+          "mapping": {
+            "type": "AUSGABE",
+            "category": "{{category || 'REPARATUR'}}",
+            "amount": "{{amount}}",
+            "date": "{{date || CURRENT_DATE}}",
+            "paymentMethod": "{{paymentMethod || 'BARKASSE'}}",
+            "vehicleId": "{{matchedVehicle.id}}",
+            "description": "{{category || 'Aufwand'}} für {{matchedVehicle.brand}} {{matchedVehicle.model}}"
+          }
+        },
+        {
+          "stepOrder": 3,
+          "targetLayer": "LAYER_3_OPERATIONAL_EXECUTION",
+          "action": "EXECUTE_OPERATIONS",
+          "operations": ["OP_SAVE_FINANCE_ENTRY"],
+          "description": "Ausgabe im Kassenbuch und in der Fahrzeug-Marge verbuchen"
+        }
+      ],
+      "expectedNextSuggestions": [
+        { "label": "Kassenbuch anzeigen", "tabKey": "finanzen" },
+        { "label": "Fahrzeug-Kalkulation ansehen", "tabKey": "lager" }
+      ]
+    },
+
+    {
+      "compoundId": "CW_CREATE_HANDOVER_PROTOCOL",
+      "title": "Übergabeprotokoll mit Zubehör & Papieren erstellen",
+      "keywords": [
+        "übergabeprotokoll erstellen", "auto übergeben", "fahrzeug ausliefern",
+        "عمل محضر تسليم", "تسليم السيارة للعميل", "انشاء بروتوكول تسليم"
+      ],
+      "description": "Erstellt das rechtssichere Übergabeprotokoll mit Checkliste aller Papiere und Schlüssel.",
+      "steps": [
+        {
+          "stepOrder": 1,
+          "targetLayer": "LAYER_1_NAVIGATION_MACRO",
+          "action": "NAVIGATE_TO_VIEW",
+          "targetTab": "operationen"
+        },
+        {
+          "stepOrder": 2,
+          "targetLayer": "LAYER_2_ENTITY_FORMS",
+          "action": "POPULATE_FORM",
+          "targetSection": "SEC_DOC_UEBERGABEPROTOKOLL",
+          "mapping": {
+            "vehicleId": "{{matchedVehicle.id}}",
+            "customerId": "{{matchedCustomer.id}}",
+            "exactMileage": "{{matchedVehicle.mileage}}",
+            "keysCount": 2,
+            "handoverDate": "{{CURRENT_DATE}}"
+          }
+        },
+        {
+          "stepOrder": 3,
+          "targetLayer": "LAYER_3_OPERATIONAL_EXECUTION",
+          "action": "EXECUTE_OPERATIONS",
+          "operations": ["OP_RENDER_PDF_PREVIEW"],
+          "description": "Übergabeprotokoll vorschauen und druckfertig bereitstellen"
+        }
+      ],
+      "expectedNextSuggestions": [
+        { "label": "Protokoll drucken", "opId": "OP_PRINT_DOCUMENT" },
+        { "label": "Per E-Mail senden", "opId": "OP_SEND_EMAIL_DOCUMENT" },
+        { "label": "Fahrzeugstatus auf 'VERKAUFT' setzen", "opId": "OP_SAVE_VEHICLE" }
+      ]
+    }
+  ]
+}

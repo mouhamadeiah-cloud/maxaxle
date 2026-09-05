@@ -1,0 +1,902 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Kalam:wght@700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@layer utilities {
+  .font-handwriting {
+    font-family: 'Caveat', 'Kalam', cursive, sans-serif;
+  }
+
+  .font-mono-code {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ========================================================================= */
+  /* PREMIUM METALLIC AUTOMOTIVE ENTERPRISE THEME (BRUSHED STEEL & CHROME)     */
+  /* ========================================================================= */
+  /* PREMIUM METALLIC AUTOMOTIVE ENTERPRISE THEME (DARK TITANIUM & MILLED STEEL)*/
+  /* ========================================================================= */
+
+  /* Global Canvas: Authentic Brushed Dark Titanium / Milled Steel Plate */
+  .bg-metallic-canvas,
+  .hub-steel-canvas {
+    background-color: #586b7c;
+    background-image: 
+      /* Dynamic Studio Key-Light originating from Center outwards */
+      radial-gradient(ellipse 75% 65% at 50% 48%, rgba(255, 255, 255, 0.60) 0%, rgba(225, 240, 252, 0.30) 28%, rgba(160, 188, 212, 0.12) 55%, transparent 80%),
+      /* Broad Anisotropic Specular Highlight Sheen */
+      linear-gradient(130deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.08) 38%, rgba(40, 60, 80, 0.12) 62%, rgba(255, 255, 255, 0.18) 100%),
+      /* Realistic Fine Horizontal Brushed Grain Scratches */
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.18) 0px,
+        rgba(0, 0, 0, 0.08) 1px,
+        rgba(255, 255, 255, 0.10) 2px,
+        rgba(0, 0, 0, 0.09) 3px,
+        rgba(255, 255, 255, 0.14) 4px
+      ),
+      /* Uniform Dark Titanium / Milled Steel Base Plate */
+      linear-gradient(180deg, #6c7f91 0%, #586b7c 35%, #4a5c6d 70%, #3e4e5e 100%);
+    background-attachment: fixed;
+  }
+
+  /* Universal Subtle Luminous Dashed Border Utility */
+  .luminous-dashed-border {
+    border: 1.2px dashed rgba(255, 255, 255, 0.7) !important;
+    box-shadow: 
+      0 0 12px rgba(255, 255, 255, 0.25), 
+      0 0 2px rgba(255, 255, 255, 0.5),
+      inset 0 1px 2px rgba(255, 255, 255, 0.85) !important;
+  }
+
+  .luminous-dashed-border-subtle {
+    border: 1px dashed rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 
+      0 0 8px rgba(255, 255, 255, 0.18),
+      inset 0 1px 1px rgba(255, 255, 255, 0.65) !important;
+  }
+
+  /* Dial & Orbital Centerpiece: Machined Stainless Steel / Titanium Convex Dial */
+  .metallic-dial {
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #d8e5ef 30%, #9cb3c5 65%, #6a8090 100%);
+    border: 2.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.95),
+      0 14px 32px rgba(10, 25, 55, 0.45),
+      0 0 14px rgba(255, 255, 255, 0.35),
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.98),
+      inset 0 -3px 6px rgba(12, 32, 70, 0.45);
+  }
+
+  /* Circular Module Nodes: Machined Aluminum Button Discs */
+  .metallic-node {
+    background: radial-gradient(circle at 35% 30%, #f4f8fb 0%, #d4e2ed 35%, #94abbc 75%, #6f8495 100%);
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.85),
+      0 8px 20px rgba(10, 25, 55, 0.36),
+      0 0 10px rgba(255, 255, 255, 0.25),
+      inset 0 1.5px 3px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 4px rgba(12, 32, 70, 0.4);
+  }
+
+  .metallic-node-active {
+    background: radial-gradient(circle at 35% 30%, #ffffff 0%, #dce7f0 30%, #9fb4c4 70%, #728797 100%);
+    border: 2.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1.5px rgba(255, 255, 255, 1),
+      0 0 25px rgba(255, 255, 255, 0.75),
+      0 10px 24px rgba(10, 25, 55, 0.45),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 5px rgba(12, 32, 70, 0.45);
+  }
+
+  /* Pill Containers, Badges & Labels: Satin Stainless Steel & Machined Metal */
+  .metallic-pill {
+    background: linear-gradient(180deg, #edf2f7 0%, #b8c8d8 50%, #7d90a2 100%);
+    border: 1.2px dashed rgba(255, 255, 255, 0.75);
+    box-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.25),
+      0 4px 12px rgba(10, 25, 55, 0.35),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+      inset 0 -1px 2px rgba(12, 32, 70, 0.35);
+    color: #0b1a2e;
+  }
+
+  .metallic-pill-light {
+    background: linear-gradient(180deg, #ffffff 0%, #dbe6ef 50%, #a2b7c7 100%);
+    border: 1.2px dashed rgba(255, 255, 255, 0.9);
+    box-shadow: 
+      0 0 12px rgba(255, 255, 255, 0.3),
+      0 3px 10px rgba(10, 25, 55, 0.28),
+      inset 0 1px 1px rgba(255, 255, 255, 1),
+      inset 0 -1px 2px rgba(12, 32, 70, 0.3);
+    color: #081424;
+  }
+
+  .metallic-pill-dark {
+    background: linear-gradient(180deg, #1e2e42 0%, #0d1827 100%);
+    border: 1.2px dashed rgba(255, 255, 255, 0.45);
+    box-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.15),
+      0 4px 14px rgba(6, 16, 36, 0.6),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    color: #f1f5f9;
+  }
+
+  /* Harmonized Metallic Cards & Workspaces with Subtle Luminous Dashed Border */
+  .glass-card,
+  .metallic-card {
+    background: linear-gradient(145deg, rgba(220, 232, 243, 0.88) 0%, rgba(182, 202, 220, 0.90) 45%, rgba(142, 165, 186, 0.94) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.2px dashed rgba(255, 255, 255, 0.7);
+    box-shadow: 
+      0 0 14px rgba(255, 255, 255, 0.25),
+      0 0 2px rgba(255, 255, 255, 0.45),
+      0 12px 36px rgba(10, 25, 55, 0.38),
+      inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95),
+      inset 0 -1.5px 3px rgba(12, 32, 70, 0.38);
+    color: #0b1a2e;
+  }
+
+  .glass-card:hover,
+  .metallic-card:hover {
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 
+      0 0 18px rgba(255, 255, 255, 0.35),
+      0 0 4px rgba(255, 255, 255, 0.6),
+      0 16px 42px rgba(10, 25, 55, 0.45),
+      inset 0 2px 3px rgba(255, 255, 255, 1),
+      inset 0 -1.5px 3px rgba(12, 32, 70, 0.38);
+  }
+
+  .glass-panel,
+  .metallic-panel {
+    background: linear-gradient(145deg, rgba(225, 236, 246, 0.92) 0%, rgba(190, 210, 226, 0.94) 50%, rgba(152, 175, 196, 0.96) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.2px dashed rgba(255, 255, 255, 0.75);
+    box-shadow: 
+      0 0 14px rgba(255, 255, 255, 0.26),
+      0 0 2px rgba(255, 255, 255, 0.5),
+      0 10px 30px rgba(10, 25, 55, 0.36),
+      inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+      inset 0 -1.5px 3px rgba(12, 32, 70, 0.38);
+    color: #0b1a2e;
+  }
+
+  /* Lightest Metallic Tone Box for Statistic Containers & Dashboard Cards */
+  .metallic-box-light {
+    background: linear-gradient(145deg, rgba(248, 252, 255, 0.94) 0%, rgba(226, 238, 248, 0.92) 50%, rgba(200, 218, 232, 0.90) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.2px dashed rgba(255, 255, 255, 0.95);
+    box-shadow: 
+      0 0 16px rgba(255, 255, 255, 0.45),
+      0 6px 20px rgba(10, 25, 55, 0.25),
+      inset 0 2px 2px rgba(255, 255, 255, 1),
+      inset 0 -1.5px 2px rgba(15, 36, 75, 0.25);
+    color: #0b1a2e;
+  }
+
+  /* Seamless Blended Metallic Card with Icon-Like Specular Polish & Luminous Glow */
+  .metallic-card-luminous,
+  .metallic-box-blended {
+    background: linear-gradient(
+      140deg,
+      rgba(215, 230, 244, 0.48) 0%,
+      rgba(165, 185, 204, 0.32) 35%,
+      rgba(115, 138, 158, 0.36) 70%,
+      rgba(195, 215, 232, 0.44) 100%
+    );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.8px solid rgba(255, 255, 255, 0.88);
+    box-shadow: 
+      /* Crisp Outer Specular Outline */
+      0 0 0 1px rgba(255, 255, 255, 0.70),
+      /* Radiant Luminous Halo Glow */
+      0 0 26px rgba(255, 255, 255, 0.40),
+      0 0 8px rgba(185, 215, 240, 0.55),
+      /* Deep Navy Ambient Elevation Shadow */
+      0 14px 34px rgba(10, 25, 55, 0.42),
+      0 4px 12px rgba(10, 25, 55, 0.28),
+      /* 3D Machined Convex Dial Rim Reflections with Deep Navy Rim */
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.98),
+      inset 0 -2.5px 4px rgba(12, 32, 70, 0.45);
+    color: #0b1a2e;
+    position: relative;
+  }
+
+  .metallic-card-luminous:hover,
+  .metallic-box-blended:hover {
+    border-color: #ffffff;
+    box-shadow: 
+      0 0 0 1.5px rgba(255, 255, 255, 0.95),
+      0 0 32px rgba(255, 255, 255, 0.55),
+      0 0 12px rgba(185, 215, 240, 0.75),
+      0 18px 40px rgba(10, 25, 55, 0.48),
+      inset 0 3px 5px rgba(255, 255, 255, 1),
+      inset 0 -2.5px 4px rgba(12, 32, 70, 0.45);
+  }
+
+  /* Frosted Aluminum Sub-Box (Replaces harsh white boxes with smooth frosted metal) */
+  .metallic-inner-subbox {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 
+      inset 0 1px 2px rgba(255, 255, 255, 0.9),
+      0 2px 8px rgba(10, 25, 55, 0.18);
+  }
+
+  /* Luminous Spacer & Ambient Light Divider Between Separated Cards (Ultra-Compact) */
+  .luminous-gap-divider {
+    position: relative;
+    height: 4px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .luminous-gap-divider::before {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.85) 50%, transparent 100%);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.85), 0 0 16px rgba(255, 255, 255, 0.45);
+  }
+
+  .luminous-gap-divider::after {
+    content: '';
+    position: absolute;
+    width: 25%;
+    height: 3px;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.55) 0%, transparent 70%);
+    filter: blur(1.5px);
+  }
+
+  /* Deepest Navy Shade for High-Contrast Typography (الكحلي العميق) */
+  .metallic-dark-text {
+    color: #0b1a2e;
+    text-shadow: 0 1px 0.5px rgba(255, 255, 255, 0.75), 0 -1px 0.5px rgba(6, 16, 42, 0.35);
+  }
+  .metallic-dark-text-subtle {
+    color: #173255;
+    text-shadow: 0 1px 0.5px rgba(255, 255, 255, 0.65);
+  }
+
+  /* ========================================================================= */
+  /* DEEP NAVY DEBOSSED METALLIC ENGRAVING (النقش الكحلي العميق الفاخر)         */
+  /* ========================================================================= */
+  .metallic-debossed-icon,
+  .hub-engraved-icon,
+  .hub-engraved-debossed-colorless,
+  .metallic-node svg,
+  .hub-coin-node svg,
+  .hub-center-dial svg,
+  .hub-footer-dome svg,
+  .metallic-pill svg,
+  .metallic-card-luminous svg:not(.preserve-color),
+  .metallic-card svg:not(.preserve-color),
+  .metallic-box-blended svg:not(.preserve-color),
+  .metallic-inner-subbox svg:not(.preserve-color),
+  .metallic-modal-container svg:not(.preserve-color) {
+    color: rgba(14, 38, 75, 0.70) !important;
+    stroke: rgba(14, 38, 75, 0.75) !important;
+    fill: none !important;
+    filter: 
+      /* 1. Upper Chiseled Recession: Deep Navy indentation groove */
+      drop-shadow(0 -1.2px 0.5px rgba(6, 18, 45, 0.96)) 
+      /* 2. Lower Specular Catchlight: Razor-sharp bottom milled highlight bevel */
+      drop-shadow(0 1.2px 0.5px rgba(220, 240, 255, 0.98)) !important;
+  }
+
+  .metallic-debossed-icon-subtle {
+    color: rgba(22, 50, 95, 0.60) !important;
+    stroke: rgba(22, 50, 95, 0.65) !important;
+    fill: none !important;
+    filter: 
+      drop-shadow(0 -1px 0.4px rgba(6, 18, 45, 0.88)) 
+      drop-shadow(0 1px 0.4px rgba(220, 240, 255, 0.95)) !important;
+  }
+
+  /* Deeply Engraved / Debossed Text Effect on Steel in Deep Navy */
+  .hub-engraved-text {
+    color: rgba(14, 34, 68, 0.88);
+    text-shadow: 
+      0 1px 0.6px rgba(225, 240, 255, 0.98),
+      0 -1px 0.6px rgba(6, 16, 42, 0.92);
+  }
+
+  .hub-engraved-text-subtle {
+    color: rgba(22, 48, 88, 0.82);
+    text-shadow: 
+      0 1px 0.5px rgba(225, 240, 255, 0.95),
+      0 -1px 0.5px rgba(8, 20, 50, 0.85);
+  }
+
+  .hub-engraved-text-light {
+    color: rgba(18, 40, 78, 0.85);
+    text-shadow: 
+      0 1px 0.8px rgba(225, 240, 255, 0.98),
+      0 -1px 0.5px rgba(6, 16, 42, 0.88);
+  }
+
+  /* Harmonized Header and Footer Metallic Bar */
+  .metallic-bar-harmonized {
+    background: linear-gradient(90deg, rgba(30, 45, 68, 0.96) 0%, rgba(45, 65, 95, 0.96) 50%, rgba(32, 48, 72, 0.96) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-color: rgba(203, 213, 225, 0.45);
+    box-shadow: 0 4px 24px rgba(6, 16, 36, 0.5);
+    color: #f1f5f9;
+  }
+
+  .glass-inner-box,
+  .metallic-recessed {
+    background: linear-gradient(180deg, rgba(14, 35, 70, 0.12) 0%, rgba(20, 48, 90, 0.08) 100%);
+    border: 1px dashed rgba(180, 210, 240, 0.6);
+    box-shadow: 
+      0 0 8px rgba(180, 210, 255, 0.2),
+      inset 0 2.5px 5px rgba(10, 25, 60, 0.35), 
+      0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  /* Recessed Form Inputs & Selects with Subtle Luminous Dashed Stroke */
+  .glass-input,
+  .metallic-input {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(230, 240, 248, 0.9) 100%);
+    border: 1px dashed rgba(140, 175, 205, 0.85);
+    color: #081424;
+    box-shadow: 
+      0 0 8px rgba(255, 255, 255, 0.15),
+      inset 0 1.5px 3px rgba(10, 25, 60, 0.25), 
+      0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  .glass-input:focus,
+  .metallic-input:focus {
+    border: 1.2px dashed rgba(255, 255, 255, 1);
+    outline: none;
+    box-shadow: 
+      0 0 14px rgba(255, 255, 255, 0.45), 
+      0 0 2px rgba(255, 255, 255, 0.8),
+      inset 0 1.5px 3px rgba(10, 25, 60, 0.25);
+  }
+
+  /* Metallic Modal & Dialog Container with Luminous Dashed Perimeter */
+  .metallic-modal-container {
+    background: linear-gradient(145deg, rgba(242, 248, 254, 0.97) 0%, rgba(215, 230, 242, 0.98) 45%, rgba(182, 202, 218, 0.99) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1.5px dashed rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      0 0 24px rgba(255, 255, 255, 0.3),
+      0 0 4px rgba(255, 255, 255, 0.6),
+      0 20px 60px rgba(10, 25, 60, 0.55),
+      inset 0 2px 4px rgba(255, 255, 255, 1),
+      inset 0 -2px 4px rgba(15, 36, 75, 0.35);
+    color: #0b1a2e;
+  }
+
+  /* ========================================================================= */
+  /* HUB-SEITE EXKLUSIV: ULTIMATE HARDWARE EDELSTAHL GRAVUR & PRÄGUNG (DEBOSSED) */
+  /* ========================================================================= */
+
+  /* Soft Radiant Specular Flare expanding dynamically from Hub center */
+  .hub-center-flare {
+    background: 
+      radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.22) 40%, transparent 75%);
+  }
+
+  /* Central Max AI Coin Dial (Turned / Lathe-Milled Stainless Steel with 3D Pop-Out Dome Elevation) */
+  .hub-center-dial {
+    background: 
+      /* Central Conical Lathe Light Sheen */
+      conic-gradient(
+        from 30deg at 50% 50%,
+        #ffffff 0deg,
+        #cfdde8 30deg,
+        #8da4b7 65deg,
+        #ffffff 110deg,
+        #b2c6d6 150deg,
+        #7991a3 195deg,
+        #ffffff 240deg,
+        #c2d3e1 285deg,
+        #8299ab 330deg,
+        #ffffff 360deg
+      );
+    border: 3px solid #ffffff;
+    box-shadow: 
+      /* Crisp Top Specular Highlight Ring */
+      0 0 0 1px rgba(255, 255, 255, 0.95),
+      /* Soft diffused deep navy metallic drop shadows */
+      0 12px 28px rgba(10, 25, 55, 0.42),
+      0 4px 10px rgba(10, 25, 55, 0.28),
+      /* Realistic Inner Cylindrical Depth & Rim Highlight */
+      inset 0 3px 5px rgba(255, 255, 255, 0.98),
+      inset 0 -3.5px 6px rgba(14, 34, 72, 0.45);
+  }
+
+  /* Knopf Recessed Groove Ring */
+  .hub-knopf-groove {
+    border: 1.5px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 
+      inset 0 1px 2px rgba(12, 30, 65, 0.35),
+      0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Knopf Engraved Reset Pill */
+  .hub-knopf-reset-pill {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(215, 230, 242, 0.3) 100%);
+    border: 1.2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 
+      inset 0 1px 2px rgba(12, 30, 65, 0.3),
+      0 2px 6px rgba(10, 25, 55, 0.28),
+      0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* 3D Machined Extruded Coin Nodes (Pop-out 3D Elevation with Cast Shadow) */
+  .hub-coin-node {
+    background: 
+      conic-gradient(
+        from 30deg at 50% 50%,
+        #ffffff 0deg,
+        #cfdde8 30deg,
+        #8da4b7 65deg,
+        #ffffff 110deg,
+        #b2c6d6 150deg,
+        #7991a3 195deg,
+        #ffffff 240deg,
+        #c2d3e1 285deg,
+        #8299ab 330deg,
+        #ffffff 360deg
+      );
+    border: 2.5px solid #ffffff;
+    box-shadow: 
+      /* Outer Specular Edge */
+      0 0 0 1px rgba(255, 255, 255, 0.9),
+      /* Deep navy elevation shadows */
+      0 10px 22px rgba(10, 25, 55, 0.38),
+      0 4px 8px rgba(10, 25, 55, 0.24),
+      /* Inner Metallic Convex Arch */
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2.5px 5px rgba(14, 34, 72, 0.4);
+  }
+
+  .hub-coin-node:hover,
+  .hub-coin-node-active {
+    background: 
+      conic-gradient(
+        from 45deg at 50% 50%,
+        #ffffff 0deg,
+        #dbe6f0 30deg,
+        #99afc1 65deg,
+        #ffffff 110deg,
+        #bed0de 150deg,
+        #859dab 195deg,
+        #ffffff 240deg,
+        #cddbe7 285deg,
+        #8fa5b5 330deg,
+        #ffffff 360deg
+      );
+    border: 2.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1.2px rgba(255, 255, 255, 1),
+      /* Dynamic Hover Lift-Off Shadow */
+      0 14px 28px rgba(10, 25, 55, 0.45),
+      0 0 25px rgba(255, 255, 255, 0.8),
+      inset 0 3px 5px rgba(255, 255, 255, 1),
+      inset 0 -3px 5px rgba(14, 34, 72, 0.35);
+  }
+
+  /* Deeply Engraved / Debossed Text Effect on Steel in Deep Navy */
+  .hub-engraved-text {
+    color: rgba(14, 34, 68, 0.88);
+    text-shadow: 
+      0 1px 0.6px rgba(225, 240, 255, 0.98),
+      0 -1px 0.6px rgba(6, 16, 42, 0.92);
+  }
+
+  .hub-engraved-text-subtle {
+    color: rgba(22, 48, 88, 0.82);
+    text-shadow: 
+      0 1px 0.5px rgba(225, 240, 255, 0.95),
+      0 -1px 0.5px rgba(8, 20, 50, 0.85);
+  }
+
+  .hub-engraved-text-light {
+    color: rgba(18, 40, 78, 0.85);
+    text-shadow: 
+      0 1px 0.8px rgba(225, 240, 255, 0.98),
+      0 -1px 0.5px rgba(6, 16, 42, 0.88);
+  }
+
+  /* Laser-Etched / Deeply Debossed, Colorless Engraving in Deep Navy */
+  .hub-engraved-icon,
+  .hub-engraved-debossed-colorless {
+    color: rgba(14, 38, 75, 0.70) !important;
+    stroke: rgba(14, 38, 75, 0.75) !important;
+    fill: none !important;
+    filter: 
+      /* 1. Upper Chiseled Recession: Deep Navy indentation groove */
+      drop-shadow(0 -1.2px 0.5px rgba(6, 18, 45, 0.96)) 
+      /* 2. Lower Specular Catchlight: Precision milled highlight bevel */
+      drop-shadow(0 1.2px 0.5px rgba(220, 240, 255, 0.98)) !important;
+  }
+
+  /* Minted Metallic Capsule Badge (Engraved Steel Capsule with Recessed Border) */
+  .hub-engraved-badge,
+  .hub-minted-badge {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(215, 230, 242, 0.6) 50%, rgba(170, 190, 205, 0.7) 100%);
+    border: 1.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.9),
+      0 4px 12px rgba(10, 25, 55, 0.3),
+      inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95),
+      inset 0 -1.5px 3px rgba(14, 34, 72, 0.35);
+    color: #0b1a2e;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  /* 3D Minted Metallic Half-Dome Footer Button (Protruding semi-circle trigger for Drawer) */
+  .hub-footer-dome {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: var(--max-ai-x, 50%) !important;
+    transform: translateX(-50%) !important;
+    transform-origin: bottom center !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    background: 
+      conic-gradient(
+        from 270deg at 50% 100%,
+        #ffffff 0deg,
+        #cfdde8 45deg,
+        #8299ab 90deg,
+        #ffffff 135deg,
+        #9cb2c3 180deg,
+        #6f879a 225deg,
+        #ffffff 270deg,
+        #b8cbdb 315deg,
+        #ffffff 360deg
+      );
+    border-top: 2.5px solid #ffffff;
+    border-left: 2.5px solid #ffffff;
+    border-right: 2.5px solid #ffffff;
+    border-bottom: none !important;
+    box-shadow: 
+      /* Specular edge highlight */
+      0 -1px 0 1px rgba(255, 255, 255, 0.95),
+      /* 3D elevation cast shadow */
+      0 -8px 24px rgba(10, 25, 55, 0.45),
+      0 -2px 8px rgba(10, 25, 55, 0.28),
+      /* Convex interior dome lighting */
+      inset 0 3px 5px rgba(255, 255, 255, 0.98),
+      inset 0 -2px 4px rgba(14, 34, 72, 0.4);
+  }
+
+  #bottom-activity-drawer-handle {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: var(--max-ai-x, 50%) !important;
+    transform: translateX(-50%) !important;
+    transform-origin: bottom center !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  #bottom-activity-drawer-handle:hover {
+    transform: translateX(-50%) scale(1.08) !important;
+  }
+
+  #bottom-activity-drawer-handle:active {
+    transform: translateX(-50%) scale(0.96) !important;
+  }
+
+  /* Rhythmic Pulsating White Flash Animation for Footer Dome & Arrow */
+  @keyframes dome-pulsating-flash {
+    0%, 100% {
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+      opacity: 0.88;
+    }
+    50% {
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.98)) drop-shadow(0 -4px 10px rgba(255, 255, 255, 0.7));
+      opacity: 1;
+    }
+  }
+
+  .animate-dome-flash {
+    animation: dome-pulsating-flash 2.4s ease-in-out infinite;
+  }
+
+  /* Machined Stainless Steel Bottom Pill Bar */
+  .hub-stamped-bar {
+    background: 
+      conic-gradient(
+        from 90deg at 50% 50%,
+        #ffffff 0deg,
+        #cfdde8 45deg,
+        #8da4b7 90deg,
+        #ffffff 135deg,
+        #b2c6d6 180deg,
+        #7991a3 225deg,
+        #ffffff 270deg,
+        #c2d3e1 315deg,
+        #ffffff 360deg
+      );
+    border: 2.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.9),
+      0 -6px 20px rgba(10, 25, 55, 0.35),
+      inset 0 2px 4px rgba(255, 255, 255, 0.95),
+      inset 0 -2px 4px rgba(14, 34, 72, 0.35);
+  }
+
+  /* Floating Metallic Preview Pill on Left */
+  .hub-preview-pill {
+    background: linear-gradient(180deg, #ffffff 0%, #d8e4ee 45%, #a6bacb 100%);
+    border: 1.5px solid #ffffff;
+    box-shadow: 
+      0 0 0 1px rgba(255, 255, 255, 0.6),
+      0 3px 8px rgba(10, 25, 55, 0.28),
+      inset 0 1.5px 3px rgba(255, 255, 255, 0.95),
+      inset 0 -1.5px 3px rgba(14, 34, 72, 0.4);
+    color: #0b1a2e;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  /* Primary Tactile Metallic Push-Button */
+  .metallic-btn-primary {
+    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 45%, #cbd5e1 100%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    color: #081424;
+    box-shadow: 
+      0 4px 12px rgba(6, 16, 36, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 1),
+      inset 0 -1px 2px rgba(6, 16, 36, 0.35);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .metallic-btn-primary:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 45%, #dbe4ec 100%);
+    box-shadow: 
+      0 6px 16px rgba(6, 16, 36, 0.45),
+      0 0 12px rgba(255, 255, 255, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+  }
+  .metallic-btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 
+      0 2px 6px rgba(6, 16, 36, 0.4),
+      inset 0 2px 4px rgba(6, 16, 36, 0.4);
+  }
+
+  /* Secondary Tactile Brushed Metal Button */
+  .metallic-btn-secondary {
+    background: linear-gradient(180deg, #203348 0%, #101c2a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #f1f5f9;
+    box-shadow: 
+      0 3px 10px rgba(6, 16, 36, 0.45),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2),
+      inset 0 -1px 2px rgba(4, 10, 24, 0.5);
+    transition: all 0.2s ease;
+  }
+  .metallic-btn-secondary:hover {
+    background: linear-gradient(180deg, #2a415c 0%, #172638 100%);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(6, 16, 36, 0.55);
+  }
+  .metallic-btn-secondary:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(4, 10, 24, 0.6);
+  }
+
+  /* Semantic Status Jewel Dots (Yellow replaced with Vibrant Green) */
+  .jewel-emerald,
+  .jewel-green {
+    background: radial-gradient(circle at 30% 30%, #86efac 0%, #22c55e 45%, #15803d 85%, #14532d 100%);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  .jewel-amber,
+  .jewel-yellow {
+    background: radial-gradient(circle at 30% 30%, #a7f3d0 0%, #10b981 45%, #047857 85%, #064e3b 100%);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.85), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  .jewel-red,
+  .jewel-rose {
+    background: radial-gradient(circle at 30% 30%, #fca5a5 0%, #ef4444 45%, #b91c1c 85%, #7f1d1d 100%);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  .jewel-cyan,
+  .jewel-blue {
+    background: radial-gradient(circle at 30% 30%, #93c5fd 0%, #3b82f6 45%, #1d4ed8 85%, #1e3a8a 100%);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+
+  /* Metallic Silver Gradient Text */
+  .silver-gradient-text {
+    background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .border-metallic-glow {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.1);
+  }
+
+  .border-metallic-subtle {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* Animations */
+@keyframes arrow-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes spin-clockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-counter-clockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-clockwise-slow {
+  animation: spin-clockwise 14s linear infinite;
+}
+
+.animate-spin-counter-fast {
+  animation: spin-counter-clockwise 8.5s linear infinite;
+}
+
+@keyframes arrow-bounce-right {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes subtle-slow-flash {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.7));
+    transform: translateX(2px);
+  }
+}
+
+.animate-subtle-slow-flash {
+  animation: subtle-slow-flash 3s ease-in-out infinite;
+}
+
+.animate-arrow-bounce {
+  animation: arrow-bounce 2s ease-in-out infinite;
+}
+
+.animate-arrow-bounce-right {
+  animation: arrow-bounce-right 1.6s ease-in-out infinite;
+}
+
+/* Smooth Luminous Light Beam Segment (5% width) Travelling Right-to-Left Along Header Divider */
+@keyframes luminous-beam-right-to-left {
+  0% {
+    left: 100%;
+    transform: translateX(0);
+    opacity: 0;
+  }
+  25% {
+    /* Covers first 25% of distance (from 100% to 75% position), reaching full radiant brightness */
+    left: 75%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+  75% {
+    /* Constant phase maintains full brightness across the middle 50% */
+    left: 25%;
+    transform: translateX(-50%);
+    opacity: 1;
+  }
+  100% {
+    /* Last 25% of distance (from 25% to 0% / off-screen left), smoothly fading out to 0 opacity */
+    left: 0%;
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.animate-luminous-beam-rtl {
+  animation: luminous-beam-right-to-left 7s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: left, opacity, transform;
+}
+
+/* Transitions */
+.transition-slide-panel {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  will-change: transform, opacity;
+}
+
+.transition-drawer-bottom {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  will-change: transform, opacity;
+}
+
+/* Print Support for Legal Documents */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #interactive-document-a4-sheet,
+  #interactive-document-a4-sheet *,
+  #document-a4-sheet,
+  #document-a4-sheet *,
+  .a4-print-sheet,
+  .a4-print-sheet * {
+    visibility: visible;
+  }
+  .print\:hidden,
+  [data-print-hidden="true"],
+  .hand-drawn-guide,
+  #cinematic-dock-container,
+  #operationen-bottom-workbench,
+  #top-preview-control-strip {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  #interactive-document-a4-sheet,
+  #document-a4-sheet,
+  .a4-print-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 20mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}
